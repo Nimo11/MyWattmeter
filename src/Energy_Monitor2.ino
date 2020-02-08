@@ -80,7 +80,7 @@ void loop()
     if (ntpState != NtpStates::waiting && atoi(config.probe[i].idx) != 0 && strlen(config.probe[i].idx) > 0)
       measure(i);
   }
-  //sprintf(offset_txt, DCPatern, offsetI);
   
-  //sprintf(time_txt, TimePatern, getTimeString(0).c_str());
+  sprintf(offset_txt, DCPatern, offsetI);
+  sprintf(time_txt, TimePatern, getTimeString(0).c_str());
 }

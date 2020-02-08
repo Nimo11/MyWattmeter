@@ -26,44 +26,53 @@ const char *MeasurePatern = "<p>Derni&egrave;re mesure:  %.3fA (%.2fW) - %.2fWh<
 const char *TimePatern = "<p><b>Time : %s</b></p>";
 const String dayName[] = {"Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"};
 
+const char *WM_INPUT_SERVER_LABEL = "Server IP";
+const char *WM_INPUT_PORT_LABEL = "Port";
+const char *WM_INPUT_NAME_LABEL = "Name";
+const char *WM_INPUT_RESISTOR_LABEL = "Resistor";
+const char *WM_INPUT_ID_LABEL = "IDx";
+const char *WM_INPUT_SAMPLE_LABEL = "Number of samples";
+const char *WM_INPUT_VOLTAGE_LABEL = "Voltage";
+const char *WM_INPUT_TRESHOLD_LABEL = "Treshold";
+
 const char powerFileName[]="/data/energy/%02d/%02d.js";
 const char measureFileName[]="/data/measure/%d.js";
 
-WiFiManagerParameter dom_server_param("server", "Server IP", config.dom_server, 40);
-WiFiManagerParameter dom_port_param("port", "Port", config.dom_port, 6);
+WiFiManagerParameter dom_server_param("server",WM_INPUT_SERVER_LABEL , config.dom_server, 40);
+WiFiManagerParameter dom_port_param("port",WM_INPUT_PORT_LABEL , config.dom_port, 6);
 
 WiFiManagerParameter btnGraph("<button onclick=\"window.location.href = '/energy.html';return false;\">Graph</button><br><br>");
 WiFiManagerParameter btnReset("<button onclick=\"window.location.href = '/cmdreset';return false;\">Reset history</button>");
 
 WiFiManagerParameter probe_name_param[4] = {
-    WiFiManagerParameter("name1", "Name", config.probe[0].probe_name, 100),
-    WiFiManagerParameter("name2", "Name", config.probe[1].probe_name, 100),
-    WiFiManagerParameter("name3", "Name", config.probe[2].probe_name, 100),
-    WiFiManagerParameter("name4", "Name", config.probe[3].probe_name, 100)};
+    WiFiManagerParameter("name1", WM_INPUT_NAME_LABEL, config.probe[0].probe_name, 100),
+    WiFiManagerParameter("name2", WM_INPUT_NAME_LABEL, config.probe[1].probe_name, 100),
+    WiFiManagerParameter("name3", WM_INPUT_NAME_LABEL, config.probe[2].probe_name, 100),
+    WiFiManagerParameter("name4", WM_INPUT_NAME_LABEL, config.probe[3].probe_name, 100)};
 
 WiFiManagerParameter resistor_param[4] = {
-    WiFiManagerParameter("resistor1", "Resistor", config.probe[0].resistor, 6),
-    WiFiManagerParameter("resistor2", "Resistor", config.probe[1].resistor, 6),
-    WiFiManagerParameter("resistor3", "Resistor", config.probe[2].resistor, 6),
-    WiFiManagerParameter("resistor4", "Resistor", config.probe[3].resistor, 6)};
+    WiFiManagerParameter("resistor1", WM_INPUT_RESISTOR_LABEL, config.probe[0].resistor, 6),
+    WiFiManagerParameter("resistor2", WM_INPUT_RESISTOR_LABEL, config.probe[1].resistor, 6),
+    WiFiManagerParameter("resistor3", WM_INPUT_RESISTOR_LABEL, config.probe[2].resistor, 6),
+    WiFiManagerParameter("resistor4", WM_INPUT_RESISTOR_LABEL, config.probe[3].resistor, 6)};
 
 WiFiManagerParameter idx_param[4] = {
-    WiFiManagerParameter("idx1", "IDx", config.probe[0].idx, 6),
-    WiFiManagerParameter("idx2", "IDx", config.probe[1].idx, 6),
-    WiFiManagerParameter("idx3", "IDx", config.probe[2].idx, 6),
-    WiFiManagerParameter("idx4", "IDx", config.probe[3].idx, 6)};
+    WiFiManagerParameter("idx1", WM_INPUT_ID_LABEL, config.probe[0].idx, 6),
+    WiFiManagerParameter("idx2", WM_INPUT_ID_LABEL, config.probe[1].idx, 6),
+    WiFiManagerParameter("idx3", WM_INPUT_ID_LABEL, config.probe[2].idx, 6),
+    WiFiManagerParameter("idx4", WM_INPUT_ID_LABEL, config.probe[3].idx, 6)};
 
 WiFiManagerParameter number_of_Samples_param[4] = {
-    WiFiManagerParameter("number_of_Samples1", "Number of samples", config.probe[0].number_of_Samples, 6),
-    WiFiManagerParameter("number_of_Samples2", "Number of samples", config.probe[1].number_of_Samples, 6),
-    WiFiManagerParameter("number_of_Samples3", "Number of samples", config.probe[2].number_of_Samples, 6),
-    WiFiManagerParameter("number_of_Samples4", "Number of samples", config.probe[3].number_of_Samples, 6)};
+    WiFiManagerParameter("number_of_Samples1", WM_INPUT_SAMPLE_LABEL, config.probe[0].number_of_Samples, 6),
+    WiFiManagerParameter("number_of_Samples2", WM_INPUT_SAMPLE_LABEL, config.probe[1].number_of_Samples, 6),
+    WiFiManagerParameter("number_of_Samples3", WM_INPUT_SAMPLE_LABEL, config.probe[2].number_of_Samples, 6),
+    WiFiManagerParameter("number_of_Samples4", WM_INPUT_SAMPLE_LABEL, config.probe[3].number_of_Samples, 6)};
 
 WiFiManagerParameter voltage_param[4] = {
-    WiFiManagerParameter("voltage1", "Voltage", config.probe[0].voltage, 6),
-    WiFiManagerParameter("voltage2", "Voltage", config.probe[1].voltage, 6),
-    WiFiManagerParameter("voltage3", "Voltage", config.probe[2].voltage, 6),
-    WiFiManagerParameter("voltage4", "Voltage", config.probe[3].voltage, 6)};
+    WiFiManagerParameter("voltage1", WM_INPUT_VOLTAGE_LABEL, config.probe[0].voltage, 6),
+    WiFiManagerParameter("voltage2", WM_INPUT_VOLTAGE_LABEL, config.probe[1].voltage, 6),
+    WiFiManagerParameter("voltage3", WM_INPUT_VOLTAGE_LABEL, config.probe[2].voltage, 6),
+    WiFiManagerParameter("voltage4", WM_INPUT_VOLTAGE_LABEL, config.probe[3].voltage, 6)};
 
 WiFiManagerParameter title_text[4] = {
     WiFiManagerParameter("<h1>Sonde 1:</h1>"),
@@ -84,10 +93,10 @@ WiFiManagerParameter measure_text[4] = {
     WiFiManagerParameter(config.probe[3].txt_measure)};
 
 WiFiManagerParameter treshold_param[4] = {
-    WiFiManagerParameter("treshold1", "Treshold", config.probe[0].treshold, 6),
-    WiFiManagerParameter("treshold2", "Treshold", config.probe[1].treshold, 6),
-    WiFiManagerParameter("treshold3", "Treshold", config.probe[2].treshold, 6),
-    WiFiManagerParameter("treshold4", "Treshold", config.probe[3].treshold, 6)};
+    WiFiManagerParameter("treshold1", WM_INPUT_TRESHOLD_LABEL, config.probe[0].treshold, 6),
+    WiFiManagerParameter("treshold2", WM_INPUT_TRESHOLD_LABEL, config.probe[1].treshold, 6),
+    WiFiManagerParameter("treshold3", WM_INPUT_TRESHOLD_LABEL, config.probe[2].treshold, 6),
+    WiFiManagerParameter("treshold4", WM_INPUT_TRESHOLD_LABEL, config.probe[3].treshold, 6)};
 
 WiFiManagerParameter dc_offset = WiFiManagerParameter(offset_txt);
 WiFiManagerParameter wm_time = WiFiManagerParameter(time_txt);
