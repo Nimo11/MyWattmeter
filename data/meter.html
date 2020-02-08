@@ -1,0 +1,161 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>Wattmeter</title>
+	<script src="gauge.js"></script>
+	<style>
+		.preview-textfield {
+			position: absolute;
+			left: 0;
+			right: 0;
+			text-align: center;
+			font-size: 2em;
+			font-weight: bold;
+			color: black;
+			font-family: 'Amaranth', sans-serif;
+			font-size: 41px;
+		}
+
+		#preview {
+			background: #f9f9f9;
+			position: relative;
+			color: #fff;
+			min-height: 200px;
+			margin: 0 20px 40px 0;
+			-webkit-border-radius: 10px;
+			-moz-border-radius: 10px;
+			border-radius: 10px;
+			clear: both;
+			display: inline-block;
+		}
+
+		button,
+		input[type='button'],
+		input[type='submit'] {
+			cursor: pointer;
+			border: 0;
+			background-color: #1fa3ec;
+			color: #fff;
+			line-height: 2.4rem;
+			font-size: 1rem;
+			width: 100%;
+			border-radius: .3rem;
+			width: 200px;
+			margin: 0 10px 10px 0px;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="holder" style="width:100%;margin-bottom: 30px;">
+
+		<div id="inner-box">
+			<div class="loader"></div>
+		</div>
+	</div>
+	<button id="btn" onclick="location.href='/graph.html'" type="button">Courbes de courant</button>
+	<button id="btn5" onclick="location.href='/energy.html'" type="button">Puissance par jour</button>
+	<button id="btn3" onclick="location.href='/'" type="button">Menu Principal</button>
+	<button id="btn4" onclick="location.href='/param'" type="button">Modifier les param&egrave;tres</button>
+	<script>
+		/// Get json from url
+		function getJson(url, done, param) {
+			var xhr = new XMLHttpRequest();
+			xhr.open('GET', url, true);
+			xhr.setRequestHeader('Content-Type', 'application/json');
+			xhr.onload = function () {
+				if (xhr.response) {
+					done(null, JSON.parse(xhr.response), param);
+				}
+				else {
+					done(xhr.response);
+				}
+			};
+			xhr.send();
+		};
+
+		function buildGauge(err, json, param) {
+			if (err) { throw err; }
+			cfg = json;
+			for (i = 0; i < cfg.probes.length; i++) {
+				holder.innerHTML += '<div id="preview"><div id="title' + i + '" style="position: relative;" class="preview-textfield"></div><canvas id="canvas' + i + '"></canvas><div id="preview-textfield' + i + '" class="preview-textfield"></div></div>';
+			}
+
+			for (i = 0; i < cfg.probes.length; i++) {
+				var target = document.getElementById('canvas' + i);
+				gauge[i] = new Gauge(target).setOptions(opts); // create sexy gauge!
+
+				gauge[i].maxValue = 30; // set max gauge value
+				gauge[i].setMinValue(0);  // Prefer setter over gauge.minValue = 0
+				gauge[i].animationSpeed = 48; // set animation speed (32 is default value)
+				var title = document.getElementById('title' + i);
+				title.innerHTML = cfg.probes[i].name;
+				label[i] = document.getElementById('preview-textfield' + i);
+				label[i].innerHTML = 0;
+				gauge[i].set(0); // set actual value
+			}
+
+			intervalID = setInterval(function () { getJson("probesvalues", setGauge) }, 1500);
+		}
+
+		function setGauge(err, val, param) {
+			if (err) { throw err; }
+			for (i = 0; i < cfg.probes.length; i++) {
+				gauge[i].set(val.values[i]);
+				label[i].innerHTML = val.values[i];
+			}
+		}
+
+		var intervalID;
+		var opts = {
+			angle: 0.15, // The span of the gauge arc
+			lineWidth: 0.44, // The line thickness
+			radiusScale: 1, // Relative radius
+			pointer: {
+				length: 0.6, // // Relative to gauge radius
+				strokeWidth: 0.035, // The thickness
+				color: '#000000' // Fill color
+			},
+			limitMax: false,     // If false, max value increases automatically if value > maxValue
+			limitMin: false,     // If true, the min value of the gauge will be fixed
+			colorStart: '#6FADCF',   // Colors
+			colorStop: '#8FC0DA',    // just experiment with them
+			strokeColor: '#E0E0E0',  // to see which ones work best for you
+			generateGradient: true,
+			highDpiSupport: true,     // High resolution support
+			staticZones: [
+				{ strokeStyle: "#F03E3E", min: 0, max: 1 }, // Red from 100 to 130
+				{ strokeStyle: "#FFDD00", min: 1, max: 2 }, // Yellow
+				{ strokeStyle: "#30B32D", min: 1, max: 28 }, // Green
+				{ strokeStyle: "#FFDD00", min: 28, max: 29 }, // Yellow
+				{ strokeStyle: "#F03E3E", min: 29, max: 30 }  // Red
+			],
+			staticLabels: {
+				font: "10px sans-serif",  // Specifies font
+				labels: [0, 15, 30],  // Print labels at these values
+				color: "#000000",  // Optional: Label text color
+				fractionDigits: 2  // Optional: Numerical precision. 0=round off.
+			},
+			renderTicks: {
+				divisions: 5,
+				divWidth: 1.1,
+				divLength: 0.7,
+				divColor: "#333333",
+				subDivisions: 3,
+				subLength: 0.5,
+				subWidth: 0.6,
+				subColor: "#666666"
+			}
+		};
+
+		var gauge = new Array();
+		var label = new Array();
+		var holder = document.getElementById('holder');
+		var cfg;
+
+		getJson("probesconfig", buildGauge);
+
+
+	</script>
+</body>

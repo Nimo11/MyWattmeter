@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>Wattmeter</title>
+	<script src="script.js"></script>
+	<style>
+	canvas{
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+	}
+	.loader {
+	    top: 15%;
+		position: relative;
+		margin: auto;
+		border: 16px solid #f3f3f3;
+		border-radius: 50%;
+		border-top: 16px solid #3498db;
+		width: 120px;
+		height: 120px;
+		-webkit-animation: spin 2s linear infinite; /* Safari */
+		animation: spin 2s linear infinite;
+	}
+
+	/* Safari */
+	@-webkit-keyframes spin {
+	  0% { -webkit-transform: rotate(0deg); }
+	  100% { -webkit-transform: rotate(360deg); }
+	}
+
+	@keyframes spin {
+	  0% { transform: rotate(0deg); }
+	  100% { transform: rotate(360deg); }
+	}
+	#inner-box {
+    background: rgba(0, 0, 0, 0.5);    
+    width: 100%;
+    top: 0px;
+    left: 0;
+	bottom: 0;
+    position: absolute;
+    padding: 0;
+    transition: opacity .5s;
+	visibility:hidden;
+	}
+	button, input[type='button'], input[type='submit'] {
+    cursor: pointer;
+    border: 0;
+    background-color: #1fa3ec;
+    color: #fff;
+    line-height: 2.4rem;
+    font-size: 1rem;
+    width: 100%;
+	border-radius: .3rem;
+	width: 200px;
+	margin: 0 10px 10px 0px;
+	}
+	
+	</style>
+</head>
+
+<body>
+	<div style="width:100%">		  
+		<canvas id="canvas"></canvas>
+		<div id="inner-box"><div class="loader"></div></div>		
+	</div>
+	<button id="btn" onclick="location.href='/graph.html'" type="button" >Courbes de courant</button>
+	<button id="btn6" onclick="location.href='/meter.html'" type="button" >Vue m&egrave;tre</button>
+	<button id="btn" onclick="location.href='/'" type="button" >Menu Principal</button>
+	<button id="btn" onclick="location.href='/param'" type="button" >Modifier les param&egrave;tres</button>
+	<script>
+	var ctx = document.getElementById("canvas");
+	var config= {};
+	var option={
+		responsive: true,
+		title: {
+			display: true,
+			text: 'Wattmeter'
+		},
+		tooltips: {
+			mode: 'index',
+			intersect: false,
+			callbacks: {
+				label: function(tooltipItem, data) {
+					var label = data.datasets[tooltipItem.datasetIndex].label || '';
+
+					if (label) {
+						label += ': ';
+					}
+					label += tooltipItem.yLabel +(displayMeasure?(displayCurrent?'A':'W'):'mV');
+					return label;
+					}
+				}
+		}
+	  };
+	
+	function getChartData() {
+			var url='energy';
+			var xhr = new XMLHttpRequest();
+			xhr.open('GET', url,true);
+			xhr.setRequestHeader('Content-Type', 'application/json');
+			xhr.onload = function() {
+				if (xhr.response) {
+					
+					config.data=JSON.parse(xhr.response);
+					config.option=option;
+					config.type='bar';
+					
+					chart.update();
+				}
+				else {
+					alert('Request failed.  Returned status of ' + xhr.status);
+				}
+			};
+			xhr.send();
+		};
+	
+	var ctx = document.getElementById('canvas').getContext('2d');
+	chart = new Chart(ctx, config);	
+	
+	getChartData();
+	</script>
+</body>
+
+</html>

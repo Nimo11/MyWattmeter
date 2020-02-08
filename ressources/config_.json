@@ -1,0 +1,1 @@
+{"dom_server":"192.168.0.48","dom_port":"8084","name0":"Sonde 1","name1":"Sonde 2","resistor0":"68.7","resistor1":"67.5","idx0":"42","idx1":"51","number_of_Samples0":"512","number_of_Samples1":"512","voltage0":"220","voltage1":"220","send_on_change0":true,"send_on_change1":true}

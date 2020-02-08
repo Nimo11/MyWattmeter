@@ -1,0 +1,25 @@
+# Available API
+
+## URL : /probesconfig
+## Sample : {"probes":[{"name":"Gene","color":"rgba(54,162,235,1)"},{"name":"Photo","color":"rgba(255,99,132)"},{"name":"Clim","color":"rgba(99,255,132)"},{"name":"Ch eau","color":"rgba(99,99,132)"}]}
+## Description : return array of probes configuration properties
+
+## URL : /probesvalues
+## Sample : {"values":[4.08,0.05,0.31,0.00]}
+## Description : return array of current probes values in ampere
+
+## URL : /probevalueX
+## Sample : {"value":4.08}
+## Description : return current value for a given probe in ampere. X must be replace by probe number
+
+## URL : /measures
+## Sample : {"datasets":[{"label": "Gene","lineTension": 0,"fill":false,"borderColor": "rgba(54,162,235,1)","data":[DATAVALUES]},{"label": "Photo","lineTension": 0,"fill":false,"borderColor": "rgba(255,99,132)","data":[DATAVALUES]},{"label": "Clim","lineTension": 0,"fill":false,"borderColor": "rgba(99,255,132)","data":[DATAVALUES]},{"label": "Ch eau","lineTension": 0,"fill":false,"borderColor": "rgba(99,99,132)","data":[DATAVALUES]}]}
+## Description : return historical  probes values
+
+## URL : /energy
+## Sample : {"labels":["Dimanche","Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi"],"datasets":[{"label":"Gene","data":[0.00,0.00,0.00,0.00,0.00,0.00,1513.03],"backgroundColor":"rgba(54,162,235,1)"},{"label":"Photo","data":[0.00,0.00,0.00,0.00,0.00,0.00,0.00],"backgroundColor":"rgba(255,99,132)"},{"label":"Clim","data":[0.00,0.00,0.00,0.00,0.00,0.00,0.00],"backgroundColor":"rgba(99,255,132)"},{"label":"Ch eau","data":[0.00,0.00,0.00,0.00,0.00,0.00,856.87],"backgroundColor":"rgba(99,99,132)"}]}
+## Description : return array of day probes values
+
+## URL : /profiles
+## Sample : 
+## Description : return last conversion results

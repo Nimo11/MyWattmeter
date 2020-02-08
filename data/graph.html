@@ -1,0 +1,198 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>Wattmeter</title>
+	<script src="script.js"></script>
+	<style>
+	canvas{
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+	}
+	.loader {
+	    top: 15%;
+		position: relative;
+		margin: auto;
+		border: 16px solid #f3f3f3;
+		border-radius: 50%;
+		border-top: 16px solid #3498db;
+		width: 120px;
+		height: 120px;
+		-webkit-animation: spin 2s linear infinite; /* Safari */
+		animation: spin 2s linear infinite;
+	}
+
+	/* Safari */
+	@-webkit-keyframes spin {
+	  0% { -webkit-transform: rotate(0deg); }
+	  100% { -webkit-transform: rotate(360deg); }
+	}
+
+	@keyframes spin {
+	  0% { transform: rotate(0deg); }
+	  100% { transform: rotate(360deg); }
+	}
+	#inner-box {
+    background: rgba(0, 0, 0, 0.5);    
+    width: 100%;
+    top: 0px;
+    left: 0;
+	bottom: 0;
+    position: absolute;
+    padding: 0;
+    transition: opacity .5s;
+	visibility:hidden;
+	}
+	button, input[type='button'], input[type='submit'] {
+    cursor: pointer;
+    border: 0;
+    background-color: #1fa3ec;
+    color: #fff;
+    line-height: 2.4rem;
+    font-size: 1rem;
+    width: 100%;
+	border-radius: .3rem;
+	width: 200px;
+	margin: 0 10px 10px 0px;
+	}
+	
+	</style>
+</head>
+
+<body>
+	<div style="width:100%;">		  
+		<canvas id="canvas"></canvas>
+		<div id="inner-box"><div class="loader"></div></div>		
+	</div>
+<button id="btn" onclick="displayMeasure=!displayMeasure;getChartData();" type="button" ></button>
+<!--<button id="btn2" onclick="displayCurrent=!displayCurrent;getChartData();" disabled type="button" ></button>!-->
+<button id="btn6" onclick="location.href='/meter.html'" type="button" >Vue m&egrave;tre</button>
+<button id="btn5" onclick="location.href='/energy.html'" type="button" >Puissance par jour</button>
+<button id="btn3" onclick="location.href='/'" type="button" >Menu Principal</button>
+<button id="btn4" onclick="location.href='/param'" type="button" >Modifier les param&egrave;tres</button>
+	<script>
+		var displayMeasure=true;
+		var displayCurrent=true;
+		
+		var config = {
+			type: 'line',
+			labels: [],
+			  data: {
+				labels: [],
+				datasets: [{
+				  data: [],
+				}]
+			  },
+			options: {
+				responsive: true,
+				title: {
+					display: true,
+					text: 'Wattmeter'
+				},
+				pan: {
+					enabled: true,
+					mode: "xy",
+					speed: 10,
+					threshold: 10
+				},
+				zoom: {
+					enabled: true,
+					drag: false,
+					mode: "xy",
+					limits: {
+						max: 10,
+						min: 0.5
+					}
+				},
+				tooltips: {
+					mode: 'index',
+					intersect: false,
+					callbacks: {
+						label: function(tooltipItem, data) {
+							var label = data.datasets[tooltipItem.datasetIndex].label || '';
+
+							if (label) {
+								label += ': ';
+							}
+							label += tooltipItem.yLabel +(displayMeasure?(displayCurrent?'A':'W'):'mV');
+							return label;
+							}
+						}
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				}
+			}
+		};
+		
+		var measuresScale={
+					xAxes: [{
+						type:'time',
+						time: {
+							parser: "MM/DD/YYYY HH:mm:ss",
+							unit: 'second'
+						  },
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Date'
+						},
+						ticks: {
+							autoSkip : true,
+							callback: function(tick, index, array) {
+								return (index % 3) ? "" : tick;
+                               }
+						}
+					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: displayCurrent?'Current (A)':'Power (W)'
+						},
+						ticks: {
+							beginAtZero:true,
+							callback: function(value, index, values) {
+							return value + (displayCurrent?'A':'W');}
+							}
+					}]
+					};
+		
+		function getChartData() {
+			document.getElementById("inner-box").style.visibility = 'visible';
+			//document.getElementById("btn2").style.display = displayMeasure?'inline-block;':'none';
+			var url=displayMeasure?'measures':'profiles';
+			var xhr = new XMLHttpRequest();
+			xhr.open('GET', url,true);
+			xhr.setRequestHeader('Content-Type', 'application/json');
+			xhr.onload = function() {
+				if (xhr.response) {
+					config.options.scales=url=='measures'?measuresScale:null;			
+					
+					config.data=JSON.parse(xhr.response);
+					config.data.labels=url=='measures'?[]:new Array(500);
+					
+					chart.update();
+					
+					document.getElementById("btn").innerHTML = displayMeasure?'Profils de mesures':'Afficher les mesures';
+					//document.getElementById("btn2").innerHTML = displayCurrent?'Exprimer en watt':'Exprimer en Amp&egrave;re';
+					document.getElementById("inner-box").style.visibility = 'hidden';
+				}
+				else {
+					alert('Request failed.  Returned status of ' + xhr.status);
+				}
+			};
+			xhr.send();
+		};
+
+		
+		var ctx = document.getElementById('canvas').getContext('2d');
+		chart = new Chart(ctx, config);	
+		
+		getChartData();
+	</script>
+</body>
+
+</html>
