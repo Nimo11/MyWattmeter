@@ -13,6 +13,9 @@ enum NtpStates
   Error
 };
 
+extern const int FW_VERSION;
+extern const char* fwUrlBase;
+
 extern NtpStates ntpState;
 extern LogObject Log;
 extern HTTPClient httpClient;

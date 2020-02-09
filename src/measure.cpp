@@ -248,7 +248,9 @@ void initDataFile()
   for (int s = 0; s < probe_count; s++)
   {
     initDataFile(s);
-    config.probe[s].ignoredCmpt = 10; //force to send first measure
+    //force to send first measure
+    config.probe[s].ignoredCmpt = 10; 
+    config.probe[s].lastValue=0;
   }
 }
 void initDataFile(int s)

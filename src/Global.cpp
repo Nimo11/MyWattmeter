@@ -1,5 +1,8 @@
 #include "Global.h"
 
+const int FW_VERSION = 1.0;
+const char* fwUrlBase = "http://https://github.com/Nimo11/MyWattmeter/tree/master/.pio/build/esp12e/firmware";
+
 LogObject Log;
 HTTPClient httpClient;
 WiFiClient client;
@@ -41,7 +44,7 @@ const char measureFileName[]="/data/measure/%d.js";
 WiFiManagerParameter dom_server_param("server",WM_INPUT_SERVER_LABEL , config.dom_server, 40);
 WiFiManagerParameter dom_port_param("port",WM_INPUT_PORT_LABEL , config.dom_port, 6);
 
-WiFiManagerParameter btnGraph("<button onclick=\"window.location.href = '/energy.html';return false;\">Graph</button><br><br>");
+WiFiManagerParameter btnGraph("<button onclick=\"window.location.href = '/power.html';return false;\">Graph</button><br><br>");
 WiFiManagerParameter btnReset("<button onclick=\"window.location.href = '/cmdreset';return false;\">Reset history</button>");
 
 WiFiManagerParameter probe_name_param[4] = {

@@ -8,4 +8,8 @@
 
 extern void setOTA();
 
+void checkForUpdates();
+
+String getMAC();
+
 #endif

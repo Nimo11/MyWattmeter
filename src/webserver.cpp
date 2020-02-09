@@ -35,7 +35,7 @@ bool loadFromSpiffs(String path) {
   if (path.startsWith("/probevalue")) return sendProbeValue(path);
   
   if (path=="/measures") return sendMeasureJson(path);
-  if (path=="/energy") return sendPowerJson(path);
+  if (path=="/power") return sendPowerJson(path);
   if (path=="/profiles") return sendProfileJson(path);
   if (path=="/cmdreset") return handleReset();
 

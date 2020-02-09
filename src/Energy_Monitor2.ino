@@ -56,6 +56,8 @@ void setup()
     wm.server->onNotFound(handleWebRequests);
 
     scanI2C();
+
+    checkForUpdates();
   }
   else
   {
