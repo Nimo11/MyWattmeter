@@ -1,7 +1,7 @@
 #include "Global.h"
 
 const int FW_VERSION = 1.0;
-const char* fwUrlBase = "http://https://github.com/Nimo11/MyWattmeter/tree/master/.pio/build/esp12e/firmware";
+const char* fwUrlBase = "http://https://github.com/Nimo11/MyWattmeter/tree/master/.pio/build/esp12e/";
 
 LogObject Log;
 HTTPClient httpClient;
