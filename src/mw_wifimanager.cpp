@@ -25,10 +25,10 @@ void setWifiManagerMenu()
     wm.addParameter(&resistor_param[i]);
     wm.addParameter(&treshold_param[i]);
     wm.addParameter(&idx_param[i]);
-    //wm.addParameter(&number_of_Samples_param[i]);
-    //wm.addParameter(&voltage_param[i]);
+    wm.addParameter(&number_of_Samples_param[i]);
+    wm.addParameter(&voltage_param[i]);
     //wm.addParameter(&on_change_param[i]);
-    //wm.addParameter(&measure_text[i]);
+    wm.addParameter(&measure_text[i]);
   }
 
   wm.addParameter(&dc_offset);

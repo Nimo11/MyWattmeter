@@ -57,7 +57,7 @@ void setup()
 
     scanI2C();
 
-    checkForUpdates();
+    //checkForUpdates();
   }
   else
   {

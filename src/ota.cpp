@@ -33,19 +33,20 @@ void setOTA() {
 }
 
 void checkForUpdates() {
-  String mac = getMAC();
+  //String mac = getMAC();
   String fwURL = String( fwUrlBase );
   //fwURL.concat( mac );
   String fwVersionURL = fwURL;
   fwVersionURL.concat( "current.ver" );
 
   Serial.println( "Checking for firmware updates." );
-  Serial.print( "MAC address: " );
-  Serial.println( mac );
+  //Serial.print( "MAC address: " );
+  //Serial.println( mac );
   Serial.print( "Firmware version URL: " );
   Serial.println( fwVersionURL );
 
   HTTPClient httpClient;
+  httpClient.setReuse(true);
   httpClient.begin( fwVersionURL );
   int httpCode = httpClient.GET();
   if( httpCode == 200 ) {
@@ -62,7 +63,7 @@ void checkForUpdates() {
       Serial.println( "Preparing to update" );
 
       String fwImageURL = fwURL;
-      fwImageURL.concat( ".bin" );
+      fwImageURL.concat( "firmware.bin" );
       t_httpUpdate_return ret = ESPhttpUpdate.update( fwImageURL );
 
       switch(ret) {

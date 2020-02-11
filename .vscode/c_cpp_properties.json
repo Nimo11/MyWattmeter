@@ -8,6 +8,7 @@
             "includePath": [
                 "E:/Documents/PlatformIO/Projects/MyWattmeter/include",
                 "E:/Documents/PlatformIO/Projects/MyWattmeter/src",
+                "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266httpUpdate/src",
                 "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266HTTPClient/src",
                 "E:/Documents/PlatformIO/Projects/MyWattmeter/lib/WifiManager/src",
                 "E:/Documents/PlatformIO/Projects/MyWattmeter/lib/LogObject/src",
@@ -40,7 +41,6 @@
                 "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266SSDP",
                 "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266SdFat/src",
                 "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266WiFiMesh/src",
-                "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266httpUpdate/src",
                 "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/GDBStub/src",
                 "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/Hash/src",
                 "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/LittleFS/src",
@@ -60,6 +60,7 @@
                 "path": [
                     "E:/Documents/PlatformIO/Projects/MyWattmeter/include",
                     "E:/Documents/PlatformIO/Projects/MyWattmeter/src",
+                    "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266httpUpdate/src",
                     "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266HTTPClient/src",
                     "E:/Documents/PlatformIO/Projects/MyWattmeter/lib/WifiManager/src",
                     "E:/Documents/PlatformIO/Projects/MyWattmeter/lib/LogObject/src",
@@ -92,7 +93,6 @@
                     "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266SSDP",
                     "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266SdFat/src",
                     "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266WiFiMesh/src",
-                    "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266httpUpdate/src",
                     "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/GDBStub/src",
                     "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/Hash/src",
                     "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/LittleFS/src",
