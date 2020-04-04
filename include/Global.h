@@ -13,15 +13,15 @@ enum NtpStates
   Error
 };
 
-extern const int FW_VERSION;
-extern const char* fwUrlBase;
+extern const int _FW_VERSION;
+extern const char* _fwUrlBase;
 
 extern NtpStates ntpState;
-extern LogObject Log;
-extern HTTPClient httpClient;
-extern WiFiClient client;
-extern WiFiManager wm;
-extern WiFiUDP Udp;
+extern LogObject _Log;
+extern HTTPClient _httpClient;
+extern WiFiClient _client;
+extern WiFiManager _wm;
+extern WiFiUDP _Udp;
 
 extern int probe_count;
 extern double offsetI; //hold ref dc value in mv
@@ -35,9 +35,9 @@ extern double Irms;
 
 extern const int blockSize;
 
-extern Config config;
+extern Config _config;
 
-extern const String send_on_change_patern ;
+extern const char *send_on_change_patern ;
 extern const char *DCPatern ;
 extern const char *TimePatern ;
 extern const char *MeasurePatern ;
@@ -66,7 +66,7 @@ extern WiFiManagerParameter wm_time;
 
 extern const String dayName[];
 
-extern const char powerFileName[];
-extern const char measureFileName[];
+extern const char *powerFileName;
+extern const char *measureFileName;
 
 #endif

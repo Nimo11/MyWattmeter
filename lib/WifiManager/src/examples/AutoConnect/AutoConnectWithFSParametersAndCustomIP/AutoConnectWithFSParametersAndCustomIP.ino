@@ -84,10 +84,10 @@ void setup() {
   setupSpiffs();
 
   // WiFiManager, Local intialization. Once its business is done, there is no need to keep it around
-  WiFiManager wm;
+  WiFiManager _wm;
 
   //set config save notify callback
-  wm.setSaveConfigCallback(saveConfigCallback);
+  _wm.setSaveConfigCallback(saveConfigCallback);
 
   // setup custom parameters
   // 
@@ -99,16 +99,16 @@ void setup() {
   WiFiManagerParameter custom_api_token("api", "api token", "", 32);
 
   //add all your parameters here
-  wm.addParameter(&custom_mqtt_server);
-  wm.addParameter(&custom_mqtt_port);
-  wm.addParameter(&custom_api_token);
+  _wm.addParameter(&custom_mqtt_server);
+  _wm.addParameter(&custom_mqtt_port);
+  _wm.addParameter(&custom_api_token);
 
   // set static ip
   IPAddress _ip,_gw,_sn;
   _ip.fromString(static_ip);
   _gw.fromString(static_gw);
   _sn.fromString(static_sn);
-  wm.setSTAStaticIPConfig(_ip, _gw, _sn);
+  _wm.setSTAStaticIPConfig(_ip, _gw, _sn);
 
   //reset settings - wipe credentials for testing
   //wm.resetSettings();
@@ -117,7 +117,7 @@ void setup() {
   //If connection fails it starts an access point with the specified name
   //here  "AutoConnectAP" if empty will auto generate basedcon chipid, if password is blank it will be anonymous
   //and goes into a blocking loop awaiting configuration
-  if (!wm.autoConnect("AutoConnectAP", "password")) {
+  if (!_wm.autoConnect("AutoConnectAP", "password")) {
     Serial.println("failed to connect and hit timeout");
     delay(3000);
     // if we still have not connected restart and try all over again

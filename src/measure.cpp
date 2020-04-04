@@ -8,13 +8,16 @@
 #include "Time.h"
 #include "Tools.h"
 #include "power.h"
+#include "LogObject.h"
+
+const char *MSG_CONV_STARTED  PROGMEM="Start measure %d(%s) %s samples\n";
 
 double calcIrms(int s, unsigned int nos)
 {
   float const multiplier = 0.125F; /* ADS1115 @ +/- 4.096V/32767 (gain 1) (signed 16-bit results in mv) */
   readADC_Continuous(s);
   delay(8);
-  float probeFactor = atof(config.probe[s].resistor);
+  float probeFactor = atof(_config.probe[s].resistor);
 
   for (unsigned int n = 0; n < nos; n++)
   {
@@ -24,7 +27,7 @@ double calcIrms(int s, unsigned int nos)
     offsetI = (offsetI + (sampleI - offsetI) / 1024);
 
     filteredI = (sampleI - offsetI);
-    config.probe[s].profile[n] = filteredI;
+    _config.probe[s].profile[n] = filteredI;
 
     filteredI = filteredI * (probeFactor / 1000); //0.03F;//1v 30A / 1000 (mv->v)
 
@@ -51,151 +54,150 @@ double calcIrms(int s, unsigned int nos)
 void measure(int s)
 {
   if (measureDebug)
-    Log.printf(LogObject::DebugLevels::Verbose, "Start measure %d(%s) %s samples\n", s, config.probe[s].idx, config.probe[s].number_of_Samples);
+    _Log.printf(LogObject::DebugLevels::Verbose, FPSTR(MSG_CONV_STARTED), s, _config.probe[s].idx, _config.probe[s].number_of_Samples);
 
-  int nos = atoi(config.probe[s].number_of_Samples);
+  int nos = atoi(_config.probe[s].number_of_Samples);
   double value = calcIrms(s, nos);
 
-  if (config.probe[s].treshold && value < atof(config.probe[s].treshold)) value = 0;
+  if (_config.probe[s].treshold && value < atof(_config.probe[s].treshold)) value = 0;
   
-  double power = value * atoi(config.probe[s].voltage);
-  double delta = abs((value - config.probe[s].lastValue) * 5); //2 dixiéme* 10
+  double power = value * atoi(_config.probe[s].voltage);
+  double delta = abs((value - _config.probe[s].lastValue) * 5); //2 dixiéme* 10
   if (measureDebug)
-    Log.printf(LogObject::DebugLevels::Verbose, "Measure done : %.2fA\n", value);
+    _Log.printf(LogObject::DebugLevels::Verbose, "Measure done : %.2fA\n", value);
 
-  if (!config.probe[s].send_on_change || delta > 1)
+  if (!_config.probe[s].send_on_change || delta > 1)
   {
     //calculate power
-    if (config.probe[s].lastChange > 0) //if there is previous measure calculated power
+    if (_config.probe[s].lastChange > 0) //if there is previous measure calculated power
       calcPower(s, value);
 
     //set config properties
-    config.probe[s].lastChange = now();
-
-    config.probe[s].lastValue = value;
-    config.probe[s].ignoredCmpt = 0;
+    _config.probe[s].lastChange = now();
+    _config.probe[s].lastValue = value;
+    _config.probe[s].ignoredCmpt = 0;
 
     //send last value with current time-1s
-    if (config.probe[s].ignoredCmpt > 0)
-      sendMeasure(s, config.probe[s].lastValue, false, 1);
+    if (_config.probe[s].ignoredCmpt > 0)
+      sendMeasure(s, _config.probe[s].lastValue, false, 1);
 
     sendMeasure(s, value, true, 0);
   }
   else
   {
-    config.probe[s].ignoredCmpt++;
+    _config.probe[s].ignoredCmpt++;
   }
 
-  sprintf(config.probe[s].txt_measure, MeasurePatern, value, power, config.probe[s].power[weekday() - 1]);
+  sprintf(_config.probe[s].txt_measure, (const char*)FPSTR(MeasurePatern), value, power, _config.probe[s].power[weekday() - 1]);
 }
 //send value for a given input using http
 void sendMeasure(int s, double v, bool close, int delta)
 {
   char cstr[16];
   itoa(v, cstr, 10);
-  sendGetRequest(urlBuilder(config.probe[s].idx, cstr), close);
+  sendGetRequest(urlBuilder(_config.probe[s].idx, cstr), close);
 
-  if (s == 1)
-  {
-    char sv[20];
-    sprintf(sv, "%.2f;%.2f", v * 220, config.probe[s].power[weekday() - 1]);
-  }
+  //if (s == 1)
+  //{
+  //  char sv[20];
+  //  sprintf(sv, "%.2f;%.2f", v * 220, config.probe[s].power[weekday() - 1]);
+  //}
 
   //store in data file
   char fileName[20];
-  sprintf(fileName, measureFileName, s);
+  sprintf(fileName, (const char*)FPSTR(measureFileName), s);
   File measureDataFile = SPIFFS.open(fileName, "a");
 
-  measureDataFile.print(getTimeString(delta));
+  measureDataFile.print(_Log.getTimeString(delta));
   measureDataFile.print("|");
   measureDataFile.print(v);
   measureDataFile.print("|");
   measureDataFile.close();
 
   if (measureDebug)
-    Log.printf(LogObject::DebugLevels::Verbose, "%s: Sended input %d (%.2fA)\n", getTimeString(delta).c_str(), s, v);
+    _Log.printf(LogObject::DebugLevels::Verbose, "%s: Sended input %d (%.2fA)\n", LogObject::getTimeString(delta).c_str(), s, v);
 }
 
 void sendGetRequest(String url, bool close)
 {
   //send data to server
-  httpClient.begin(client, url);
+  _httpClient.begin(_client, url);
 
-  int httpCode = httpClient.GET(); //Send the request
+  int httpCode = _httpClient.GET(); //Send the request
 
   if (httpCode > 0)
   {                                          //Check the returning code
-    String payload = httpClient.getString(); //Get the request response payload
+    String payload = _httpClient.getString(); //Get the request response payload
   }
 
   if (close)
-    httpClient.end();
+    _httpClient.end();
 }
 
 bool sendProfileJson(String path)
 {
-  WiFiClient client = wm.server->client();
+  WiFiClient _client = _wm.server->client();
   sendHeader();
-  client.print("{\"datasets\":[");
+  _client.print("{\"datasets\":[");
 
   for (int s = 0; s < probe_count; s++)
   {
     if (s > 0)
-      client.print(",");
-    client.print("{\"label\": \"" + String(config.probe[s].probe_name) + "\",\"lineTension\": 0,\"fill\":false,\"borderColor\": \"" + config.probe[s].color + "\",\"data\":[");
-    client.print(String(config.probe[s].profile[0]));
-    for (int c = 1; c < atoi(config.probe[s].number_of_Samples); c++)
+      _client.print(",");
+    _client.print("{\"label\": \"" + String(_config.probe[s].probe_name) + "\",\"lineTension\": 0,\"fill\":false,\"borderColor\": \"" + _config.probe[s].color + "\",\"data\":[");
+    _client.print(String(_config.probe[s].profile[0]));
+    for (int c = 1; c < atoi(_config.probe[s].number_of_Samples); c++)
     {
-      client.print("," + String(config.probe[s].profile[c]));
+      _client.print("," + String(_config.probe[s].profile[c]));
     }
-    client.print("]}");
+    _client.print("]}");
   }
-  client.print("]}");
+  _client.print("]}");
   delay(1);
-  client.stop();
+  _client.stop();
 
   return true;
 }
 
 bool sendMeasureJson(String path)
 {
-  Log.println(LogObject::DebugLevels::Verbose, "Sending Measures");
-  WiFiClient client = wm.server->client();
+  _Log.println(LogObject::DebugLevels::Verbose, "Sending Measures");
+  WiFiClient _client = _wm.server->client();
   sendHeader();
-  client.print("{\"datasets\":[");
+  _client.print("{\"datasets\":[");
 
   for (int s = 0; s < probe_count; s++)
   {
     if (s > 0)
-      client.print(",");
+      _client.print(",");
     getJsonFile(s);
   }
 
-  client.print("]}");
+  _client.print("]}");
   delay(1);
-  client.stop();
+  _client.stop();
 
   return true;
 }
 
 void getJsonFile(int s)
 {
-  WiFiClient client = wm.server->client();
-  DataBlock block(1024, client);
+  WiFiClient _client = _wm.server->client();
+  DataBlock block(1024, _client);
 
   block.addArray("{\"label\": \"", 11);
-  block.addArray(config.probe[s].probe_name, 100);
+  block.addArray(_config.probe[s].probe_name, 100);
   block.addArray("\",\"lineTension\": 0,\"fill\":false,\"borderColor\": \"", 48);
-  block.addArray(config.probe[s].color, 20);
+  block.addArray(_config.probe[s].color, 20);
   block.addArray("\",\"data\":[", 10);
 
   char fileName[20];
-  sprintf(fileName, measureFileName, s);
+  sprintf(fileName, (const char*)FPSTR(measureFileName), s);
   File dataFile = SPIFFS.open(fileName, "r");
 
   if (!dataFile)
   {
-    Log.println(LogObject::DebugLevels::ErrorOnly, "Failed to open data file");
+    _Log.println(LogObject::DebugLevels::ErrorOnly, "Failed to open data file");
   }
   else
   {
@@ -218,9 +220,9 @@ void getJsonFile(int s)
     if (!start)
       block.addChar(','); //complete with last value
     block.addArray("{\"x\":\"", 6);
-    block.addString(getTimeString(0));
+    block.addString(LogObject::getTimeString(0));
     block.addArray("\",\"y\":\"", 6);
-    block.addString(String(config.probe[s].lastValue));
+    block.addString(String(_config.probe[s].lastValue));
     block.addChar('}');
   }
 
@@ -249,14 +251,14 @@ void initDataFile()
   {
     initDataFile(s);
     //force to send first measure
-    config.probe[s].ignoredCmpt = 10; 
-    config.probe[s].lastValue=0;
+    _config.probe[s].ignoredCmpt = 10; 
+    _config.probe[s].lastValue=0;
   }
 }
 void initDataFile(int s)
 {
   char fileName[20];
-  sprintf(fileName, measureFileName, s);
+  sprintf(fileName, (const char*)FPSTR(measureFileName), s);
   SPIFFS.remove(fileName);
   File initFile = SPIFFS.open(fileName, "w");
   initFile.print("");
@@ -267,7 +269,7 @@ void initDataFile(int s)
     for (int d = 0; d < 7; d++)
     {
       char fileName[20];
-      sprintf(fileName, powerFileName, s, d);
+      sprintf(fileName, (const char*)FPSTR(powerFileName), s, d);
       SPIFFS.remove(fileName);
     }
   }
@@ -275,35 +277,35 @@ void initDataFile(int s)
 
 bool sendProbeValue(String path)
 {
-  Log.println(LogObject::DebugLevels::Verbose, "Sending probe value");
+  _Log.println(LogObject::DebugLevels::Verbose, "Sending probe value");
   int s = (int)path[path.length() - 1];
 
   sendHeader();
-  wm.server->client().print("{");
-  sendJsonProperty("value", config.probe[s].lastValue);
-  wm.server->client().print("}");
+  _wm.server->client().print("{");
+  sendJsonProperty("value", _config.probe[s].lastValue);
+  _wm.server->client().print("}");
   delay(1);
-  wm.server->client().stop();
+  _wm.server->client().stop();
 
   return true;
 }
 
 bool sendProbesValues(String path)
 {
-  Log.println(LogObject::DebugLevels::Verbose, "Sending probes values");
+  _Log.println(LogObject::DebugLevels::Verbose, "Sending probes values");
   sendHeader();
-  wm.server->client().print("{\"values\":[");
+  _wm.server->client().print("{\"values\":[");
 
   for (int s = 0; s < probe_count; s++)
   {
     if (s > 0)
-      wm.server->client().print(",");
-    wm.server->client().print(config.probe[s].lastValue);
+      _wm.server->client().print(",");
+    _wm.server->client().print(_config.probe[s].lastValue);
   }
 
-  wm.server->client().print("]}");
+  _wm.server->client().print("]}");
   delay(1);
-  wm.server->client().stop();
+  _wm.server->client().stop();
 
   return true;
 }

@@ -11,14 +11,14 @@
                 "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266httpUpdate/src",
                 "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266HTTPClient/src",
                 "E:/Documents/PlatformIO/Projects/MyWattmeter/lib/WifiManager/src",
-                "E:/Documents/PlatformIO/Projects/MyWattmeter/lib/LogObject/src",
                 "C:/Users/dapot/.platformio/lib/ArduinoJson_ID64/src",
-                "C:/Users/dapot/.platformio/lib/Time_ID44",
                 "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/Ethernet/src",
                 "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/SPI",
                 "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/DNSServer/src",
                 "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/ArduinoOTA",
                 "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266mDNS/src",
+                "E:/Documents/PlatformIO/Projects/MyWattmeter/lib/LogObject/src",
+                "C:/Users/dapot/.platformio/lib/Time_ID44",
                 "E:/Documents/PlatformIO/Projects/MyWattmeter/lib/DataBlock/src",
                 "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266WebServer/src",
                 "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266WiFi/src",
@@ -31,6 +31,7 @@
                 "C:/Users/dapot/.platformio/lib/Adafruit NeoPixel_ID28",
                 "C:/Users/dapot/.platformio/lib/ESPAsyncUDP_ID359/src",
                 "C:/Users/dapot/.platformio/lib/EspSoftwareSerial_ID168/src",
+                "C:/Users/dapot/.platformio/lib/MFRC522_ID63/src",
                 "C:/Users/dapot/.platformio/lib/NtpClientLib_ID727/src",
                 "C:/Users/dapot/.platformio/lib/Time_ID44@1.5",
                 "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/EEPROM",
@@ -63,14 +64,14 @@
                     "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266httpUpdate/src",
                     "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266HTTPClient/src",
                     "E:/Documents/PlatformIO/Projects/MyWattmeter/lib/WifiManager/src",
-                    "E:/Documents/PlatformIO/Projects/MyWattmeter/lib/LogObject/src",
                     "C:/Users/dapot/.platformio/lib/ArduinoJson_ID64/src",
-                    "C:/Users/dapot/.platformio/lib/Time_ID44",
                     "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/Ethernet/src",
                     "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/SPI",
                     "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/DNSServer/src",
                     "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/ArduinoOTA",
                     "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266mDNS/src",
+                    "E:/Documents/PlatformIO/Projects/MyWattmeter/lib/LogObject/src",
+                    "C:/Users/dapot/.platformio/lib/Time_ID44",
                     "E:/Documents/PlatformIO/Projects/MyWattmeter/lib/DataBlock/src",
                     "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266WebServer/src",
                     "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266WiFi/src",
@@ -83,6 +84,7 @@
                     "C:/Users/dapot/.platformio/lib/Adafruit NeoPixel_ID28",
                     "C:/Users/dapot/.platformio/lib/ESPAsyncUDP_ID359/src",
                     "C:/Users/dapot/.platformio/lib/EspSoftwareSerial_ID168/src",
+                    "C:/Users/dapot/.platformio/lib/MFRC522_ID63/src",
                     "C:/Users/dapot/.platformio/lib/NtpClientLib_ID727/src",
                     "C:/Users/dapot/.platformio/lib/Time_ID44@1.5",
                     "C:/Users/dapot/.platformio/packages/framework-arduinoespressif8266/libraries/EEPROM",
@@ -109,7 +111,7 @@
                 ]
             },
             "defines": [
-                "PLATFORMIO=40100",
+                "PLATFORMIO=40301",
                 "ESP8266",
                 "ARDUINO_ARCH_ESP8266",
                 "ARDUINO_ESP8266_ESP12",
@@ -130,7 +132,12 @@
             "intelliSenseMode": "clang-x64",
             "cStandard": "c99",
             "cppStandard": "c++11",
-            "compilerPath": "\"C:/Users/dapot/.platformio/packages/toolchain-xtensa/bin/xtensa-lx106-elf-gcc.exe\" -mlongcalls -mtext-section-literals"
+            "compilerPath": "C:/Users/dapot/.platformio/packages/toolchain-xtensa/bin/xtensa-lx106-elf-gcc.exe",
+            "compilerArgs": [
+                "-mlongcalls",
+                "-mtext-section-literals",
+                ""
+            ]
         }
     ],
     "version": 4

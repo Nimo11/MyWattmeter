@@ -18,13 +18,14 @@
 #include "I2C.h"
 #include "webserver.h"
 #include "mw_wifimanager.h"
+#include "LogObject.h"
 
 void setup()
 {
 
-  strcpy(config.probe[1].color, "rgba(255,99,132)");
-  strcpy(config.probe[2].color, "rgba(99,255,132)");
-  strcpy(config.probe[3].color, "rgba(99,99,132)");
+  strcpy(_config.probe[1].color, "rgba(255,99,132)");
+  strcpy(_config.probe[2].color, "rgba(99,255,132)");
+  strcpy(_config.probe[3].color, "rgba(99,99,132)");
 
   Serial.begin(115200);
   delay(10);
@@ -34,16 +35,21 @@ void setup()
 
   startSPIFFS();
 
+  _Log.level=LogObject::DebugLevels::Verbose;
+  _Log.fileName="/debug.log";
+  _Log.initLogFile();
+  _Log.debugType=LogObject::DebugType::FileType;
+
   loadConfig();
 
   loadPowerCount();
 
   setWifiManagerMenu();
 
-  if (wm.autoConnect("My_Wattmeter"))
+  if (_wm.autoConnect("My_Wattmeter"))
   {
-    Log.print(LogObject::DebugLevels::Normal, F("IP Address "));
-    Log.println(LogObject::DebugLevels::Normal, WiFi.localIP().toString());
+    _Log.print(LogObject::DebugLevels::Normal, F("IP Address "));
+    _Log.println(LogObject::DebugLevels::Normal, WiFi.localIP().toString());
     WiFi.mode(WIFI_STA);
     WiFi.hostname(F("My_Wattmetre"));
 
@@ -51,9 +57,9 @@ void setup()
 
     setOTA();
 
-    wm.startWebPortal();
+    _wm.startWebPortal();
 
-    wm.server->onNotFound(handleWebRequests);
+    _wm.server->onNotFound(handleWebRequests);
 
     scanI2C();
 
@@ -61,7 +67,7 @@ void setup()
   }
   else
   {
-    Log.println(LogObject::DebugLevels::Normal, F("Config portal running!"));
+    _Log.println(LogObject::DebugLevels::Normal, F("Config portal running!"));
   }
 }
 
@@ -71,18 +77,18 @@ void loop()
 
   while (millis() < time_ref)
   {
-    wm.process();
+    _wm.process();
     ArduinoOTA.handle();
   }
 
   for (int i = 0; i < probe_count; i++)
   {
-    wm.process();
+    _wm.process();
     ArduinoOTA.handle();
-    if (ntpState != NtpStates::waiting && atoi(config.probe[i].idx) != 0 && strlen(config.probe[i].idx) > 0)
+    if (ntpState != NtpStates::waiting && atoi(_config.probe[i].idx) != 0 && strlen(_config.probe[i].idx) > 0)
       measure(i);
   }
   
-  sprintf(offset_txt, DCPatern, offsetI);
-  sprintf(time_txt, TimePatern, getTimeString(0).c_str());
+  sprintf(offset_txt,  (const char*)FPSTR(DCPatern), offsetI);
+  sprintf(time_txt, (const char*)FPSTR(TimePatern), LogObject::getTimeString(0).c_str());
 }

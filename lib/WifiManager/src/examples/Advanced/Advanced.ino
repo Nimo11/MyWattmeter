@@ -6,7 +6,7 @@
 
 #define TRIGGER_PIN 0
 
-WiFiManager wm; // global wm instance
+WiFiManager _wm; // global wm instance
 WiFiManagerParameter custom_field; // global param ( for non blocking w params )
 
 void setup() {
@@ -32,8 +32,8 @@ void setup() {
   const char* custom_radio_str = "<br/><label for='customfieldid'>Custom Field Label</label><input type='radio' name='customfieldid' value='1' checked> One<br><input type='radio' name='customfieldid' value='2'> Two<br><input type='radio' name='customfieldid' value='3'> Three";
   new (&custom_field) WiFiManagerParameter(custom_radio_str); // custom html input
   
-  wm.addParameter(&custom_field);
-  wm.setSaveParamsCallback(saveParamCallback);
+  _wm.addParameter(&custom_field);
+  _wm.setSaveParamsCallback(saveParamCallback);
 
   // custom menu via array or vector
   // 
@@ -41,10 +41,10 @@ void setup() {
   // const char* menu[] = {"wifi","info","param","sep","restart","exit"}; 
   // wm.setMenu(menu,6);
   std::vector<const char *> menu = {"wifi","info","param","sep","restart","exit"};
-  wm.setMenu(menu);
+  _wm.setMenu(menu);
 
   // set dark theme
-  wm.setClass("invert");
+  _wm.setClass("invert");
 
 
   //set static ip
@@ -53,7 +53,7 @@ void setup() {
   // wm.setShowDnsFields(true);    // force show dns field always
 
   // wm.setConnectTimeout(20); // how long to try to connect for before continuing
-  wm.setConfigPortalTimeout(30); // auto close configportal after n seconds
+  _wm.setConfigPortalTimeout(30); // auto close configportal after n seconds
   // wm.setCaptivePortalEnable(false); // disable captive portal redirection
   // wm.setAPClientCheck(true); // avoid timeout if client connected to softap
 
@@ -68,7 +68,7 @@ void setup() {
   bool res;
   // res = wm.autoConnect(); // auto generated AP name from chipid
   // res = wm.autoConnect("AutoConnectAP"); // anonymous ap
-  res = wm.autoConnect("AutoConnectAP","password"); // password protected ap
+  res = _wm.autoConnect("AutoConnectAP","password"); // password protected ap
 
   if(!res) {
     Serial.println("Failed to connect or hit timeout");
@@ -92,15 +92,15 @@ void checkButton(){
       if( digitalRead(TRIGGER_PIN) == LOW ){
         Serial.println("Button Held");
         Serial.println("Erasing Config, restarting");
-        wm.resetSettings();
+        _wm.resetSettings();
         ESP.restart();
       }
       
       // start portal w delay
       Serial.println("Starting config portal");
-      wm.setConfigPortalTimeout(120);
+      _wm.setConfigPortalTimeout(120);
       
-      if (!wm.startConfigPortal("OnDemandAP","password")) {
+      if (!_wm.startConfigPortal("OnDemandAP","password")) {
         Serial.println("failed to connect or hit timeout");
         delay(3000);
         // ESP.restart();
@@ -116,8 +116,8 @@ void checkButton(){
 String getParam(String name){
   //read parameter from server, for customhmtl input
   String value;
-  if(wm.server->hasArg(name)) {
-    value = wm.server->arg(name);
+  if(_wm.server->hasArg(name)) {
+    value = _wm.server->arg(name);
   }
   return value;
 }

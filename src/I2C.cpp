@@ -26,23 +26,23 @@ void scanI2C()
 
     if (error == 0)
     {
-      Log.print(LogObject::DebugLevels::Normal,F("I2C device found at address 0x"));
+      _Log.print(LogObject::DebugLevels::Normal,F("I2C device found at address 0x"));
       if (address < 16)
-        Log.print(LogObject::DebugLevels::Normal,"0");
-      Log.println(LogObject::DebugLevels::Normal,address, HEX);
+        _Log.print(LogObject::DebugLevels::Normal,"0");
+      _Log.println(LogObject::DebugLevels::Normal,address, HEX);
       
       nDevices++;
     }
     else if (error == 4)
     {
-      Log.print(LogObject::DebugLevels::ErrorOnly,F("Unknown error at address 0x"));
+      _Log.print(LogObject::DebugLevels::ErrorOnly,F("Unknown error at address 0x"));
       if (address < 16)
-        Log.print(LogObject::DebugLevels::ErrorOnly,"0");
-      Log.println(LogObject::DebugLevels::ErrorOnly,address, HEX);
+        _Log.print(LogObject::DebugLevels::ErrorOnly,"0");
+      _Log.println(LogObject::DebugLevels::ErrorOnly,address, HEX);
     }
   }
   if (nDevices == 0)
-    Log.println(LogObject::DebugLevels::ErrorOnly,F("No I2C devices found\n"));
+    _Log.println(LogObject::DebugLevels::ErrorOnly,F("No I2C devices found\n"));
   else
-    Log.println(LogObject::DebugLevels::Verbose,F("done\n"));
+    _Log.println(LogObject::DebugLevels::Verbose,F("done\n"));
 }

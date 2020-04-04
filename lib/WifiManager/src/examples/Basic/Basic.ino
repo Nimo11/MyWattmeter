@@ -7,7 +7,7 @@ void setup() {
     // WiFi.mode(WiFi_STA); // it is a good practice to make sure your code sets wifi mode how you want it.
 
     //WiFiManager, Local intialization. Once its business is done, there is no need to keep it around
-    WiFiManager wm;
+    WiFiManager _wm;
 
     //reset settings - wipe credentials for testing
     //wm.resetSettings();
@@ -20,7 +20,7 @@ void setup() {
     bool res;
     // res = wm.autoConnect(); // auto generated AP name from chipid
     // res = wm.autoConnect("AutoConnectAP"); // anonymous ap
-    res = wm.autoConnect("AutoConnectAP","password"); // password protected ap
+    res = _wm.autoConnect("AutoConnectAP","password"); // password protected ap
 
     if(!res) {
         Serial.println("Failed to connect");

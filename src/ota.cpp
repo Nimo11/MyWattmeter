@@ -12,30 +12,31 @@ void setOTA() {
   ArduinoOTA.setPassword("wattmetre");
 
   ArduinoOTA.onStart([]() {
-    Log.println(LogObject::DebugLevels::Normal,"Start OTA update");
+    _Log.println(LogObject::DebugLevels::Normal,"Start OTA update");
   });
   ArduinoOTA.onEnd([]() {
-    Log.println(LogObject::DebugLevels::Verbose,"\nEnd of OTA");
+    _Log.println(LogObject::DebugLevels::Verbose,"\nEnd of OTA");
   });
   ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
-    Log.printf(LogObject::DebugLevels::Verbose,"Progress: %u%%\r", (progress / (total / 100)));
+    _Log.printf(LogObject::DebugLevels::Verbose,"Progress: %u%%\r", (progress / (total / 100)));
   });
   ArduinoOTA.onError([](ota_error_t error) {
-    Log.printf(LogObject::DebugLevels::ErrorOnly,"Error[%u]: ", error);
-    if (error == OTA_AUTH_ERROR) Log.println(LogObject::DebugLevels::ErrorOnly,"Auth Failed");
-    else if (error == OTA_BEGIN_ERROR) Log.println(LogObject::DebugLevels::ErrorOnly,"Begin Failed");
-    else if (error == OTA_CONNECT_ERROR) Log.println(LogObject::DebugLevels::ErrorOnly,"Connect Failed");
-    else if (error == OTA_RECEIVE_ERROR) Log.println(LogObject::DebugLevels::ErrorOnly,"Receive Failed");
-    else if (error == OTA_END_ERROR) Log.println(LogObject::DebugLevels::ErrorOnly,"End Failed");
+    _Log.printf(LogObject::DebugLevels::ErrorOnly,"Error[%u]: ", error);
+    if (error == OTA_AUTH_ERROR) _Log.println(LogObject::DebugLevels::ErrorOnly,"Auth Failed");
+    else if (error == OTA_BEGIN_ERROR) _Log.println(LogObject::DebugLevels::ErrorOnly,"Begin Failed");
+    else if (error == OTA_CONNECT_ERROR) _Log.println(LogObject::DebugLevels::ErrorOnly,"Connect Failed");
+    else if (error == OTA_RECEIVE_ERROR) _Log.println(LogObject::DebugLevels::ErrorOnly,"Receive Failed");
+    else if (error == OTA_END_ERROR) _Log.println(LogObject::DebugLevels::ErrorOnly,"End Failed");
   });
   ArduinoOTA.begin();
-  Log.println(LogObject::DebugLevels::Normal,"OTA ready");
+  _Log.println(LogObject::DebugLevels::Normal,"OTA ready");
 }
-
+/*
+    Check on line version and compare to current
+    Return true if on line is newer
+*/
 void checkForUpdates() {
-  //String mac = getMAC();
-  String fwURL = String( fwUrlBase );
-  //fwURL.concat( mac );
+  String fwURL = String( _fwUrlBase );
   String fwVersionURL = fwURL;
   fwVersionURL.concat( "current.ver" );
 
@@ -45,21 +46,21 @@ void checkForUpdates() {
   Serial.print( "Firmware version URL: " );
   Serial.println( fwVersionURL );
 
-  HTTPClient httpClient;
-  httpClient.setReuse(true);
-  httpClient.begin( fwVersionURL );
-  int httpCode = httpClient.GET();
+  HTTPClient _httpClient;
+  _httpClient.setReuse(true);
+  _httpClient.begin( fwVersionURL );
+  int httpCode = _httpClient.GET();
   if( httpCode == 200 ) {
-    String newFWVersion = httpClient.getString();
+    String newFWVersion = _httpClient.getString();
 
     Serial.print( "Current firmware version: " );
-    Serial.println( FW_VERSION );
+    Serial.println( _FW_VERSION );
     Serial.print( "Available firmware version: " );
     Serial.println( newFWVersion );
 
     int newVersion = newFWVersion.toInt();
 
-    if( newVersion > FW_VERSION ) {
+    if( newVersion > _FW_VERSION ) {
       Serial.println( "Preparing to update" );
 
       String fwImageURL = fwURL;
@@ -84,7 +85,7 @@ void checkForUpdates() {
     Serial.print( "Firmware version check failed, got HTTP response code " );
     Serial.println( httpCode );
   }
-  httpClient.end();
+  _httpClient.end();
 }
 
 String getMAC()

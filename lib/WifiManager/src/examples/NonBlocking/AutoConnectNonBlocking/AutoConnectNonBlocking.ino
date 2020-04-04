@@ -1,5 +1,5 @@
 #include <WiFiManager.h> // https://github.com/tzapu/WiFiManager
-WiFiManager wm;
+WiFiManager _wm;
 
 void setup() {
     // put your setup code here, to run once:
@@ -8,11 +8,11 @@ void setup() {
     //reset settings - wipe credentials for testing
     //wm.resetSettings();
 
-    wm.setConfigPortalBlocking(false);
+    _wm.setConfigPortalBlocking(false);
 
     //automatically connect using saved credentials if they exist
     //If connection fails it starts an access point with the specified name
-    if(wm.autoConnect("AutoConnectAP")){
+    if(_wm.autoConnect("AutoConnectAP")){
         Serial.println("connected...yeey :)");
     }
     else {
@@ -21,6 +21,6 @@ void setup() {
 }
 
 void loop() {
-    wm.process();
+    _wm.process();
     // put your main code here, to run repeatedly:
 }

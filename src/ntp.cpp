@@ -8,9 +8,9 @@
 void setNTP()
 {
   ntpState = NtpStates::waiting;
-  Udp.begin(localPort);
+  _Udp.begin(localPort);
   Serial.print("Local port: ");
-  Serial.println(Udp.localPort());
+  Serial.println(_Udp.localPort());
   Serial.println("waiting for sync");
 
   setSyncProvider(getNtpTime);
@@ -21,7 +21,7 @@ time_t getNtpTime()
 {
   IPAddress ntpServerIP; // NTP server's ip address
 
-  while (Udp.parsePacket() > 0); // discard any previously received packets
+  while (_Udp.parsePacket() > 0); // discard any previously received packets
   Serial.println("Transmit NTP Request");
   // get a random server from the pool
   int err = WiFi.hostByName(ntpServerName, ntpServerIP);
@@ -34,12 +34,12 @@ time_t getNtpTime()
     uint32_t beginWait = millis();
     while (millis() - beginWait < 1500)
     {
-      int size = Udp.parsePacket();
+      int size = _Udp.parsePacket();
       if (size >= NTP_PACKET_SIZE)
       {
         Serial.println("Receive NTP Response");
         
-        Udp.read(packetBuffer, NTP_PACKET_SIZE); // read packet into the buffer
+        _Udp.read(packetBuffer, NTP_PACKET_SIZE); // read packet into the buffer
         unsigned long secsSince1900;
         // convert four bytes starting at location 40 to a long integer
         secsSince1900 = (unsigned long)packetBuffer[40] << 24;
@@ -79,7 +79,7 @@ void sendNTPpacket(IPAddress &address)
   packetBuffer[15] = 52;
   // all NTP fields have been given values, now
   // you can send a packet requesting a timestamp:
-  Udp.beginPacket(address, 123); //NTP requests are to port 123
-  Udp.write(packetBuffer, NTP_PACKET_SIZE);
-  Udp.endPacket();
+  _Udp.beginPacket(address, 123); //NTP requests are to port 123
+  _Udp.write(packetBuffer, NTP_PACKET_SIZE);
+  _Udp.endPacket();
 }

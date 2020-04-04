@@ -7,7 +7,7 @@
 // select which pin will trigger the configuration portal when set to LOW
 #define TRIGGER_PIN 0
 
-WiFiManager wm;
+WiFiManager _wm;
 
 bool portalRunning = false;
 
@@ -26,7 +26,7 @@ void loop() {
 void checkButton(){
   // is auto timeout portal running
   if(portalRunning){
-    wm.process();
+    _wm.process();
   }
 
   // is configuration portal requested?
@@ -35,12 +35,12 @@ void checkButton(){
     if(digitalRead(TRIGGER_PIN) == LOW) {
       if(!portalRunning){
         Serial.println("Button Pressed, Starting Portal");
-        wm.startWebPortal();
+        _wm.startWebPortal();
         portalRunning = true;
       }
       else{
         Serial.println("Button Pressed, Stopping Portal");
-        wm.startWebPortal();
+        _wm.startWebPortal();
         portalRunning = false;
       }
     }

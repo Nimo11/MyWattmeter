@@ -34,7 +34,7 @@ const char CFG_JSON_NODE_PROBE_SENDONCHANGE[]  ="send_on_change";
 struct Probe
 {
   char probe_name[100] = "My Probe";
-  int16_t profile[2048];
+  int16_t profile[1024];
   char color[20] = "rgba(54,162,235,1)";
   char idx[6] = "0";
   char number_of_Samples[6] = "512";

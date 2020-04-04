@@ -9,20 +9,20 @@
 #include "power.h"
 
 void handleWebRequests() {
-  if (loadFromSpiffs(wm.server->uri())) return;
+  if (loadFromSpiffs(_wm.server->uri())) return;
   String message = "File Not Detected\n\n";
   message += "URI: ";
-  message += wm.server->uri();
+  message += _wm.server->uri();
   message += "\nMethod: ";
-  message += (wm.server->method() == HTTP_GET) ? "GET" : "POST";
+  message += (_wm.server->method() == HTTP_GET) ? "GET" : "POST";
   message += "\nArguments: ";
-  message += wm.server->args();
+  message += _wm.server->args();
   message += "\n";
-  for (uint8_t i = 0; i < wm.server->args(); i++) {
-    message += " NAME:" + wm.server->argName(i) + "\n VALUE:" + wm.server->arg(i) + "\n";
+  for (uint8_t i = 0; i < _wm.server->args(); i++) {
+    message += " NAME:" + _wm.server->argName(i) + "\n VALUE:" + _wm.server->arg(i) + "\n";
   }
-  wm.server->send(404, "text/plain", message);
-  Log.println(LogObject::DebugLevels::ErrorOnly,message);
+  _wm.server->send(404, "text/plain", message);
+  _Log.println(LogObject::DebugLevels::ErrorOnly,message);
 }
 // get file from spiffs
 bool loadFromSpiffs(String path) {
@@ -39,11 +39,11 @@ bool loadFromSpiffs(String path) {
   if (path=="/profiles") return sendProfileJson(path);
   if (path=="/cmdreset") return handleReset();
 
-  wm.server->sendHeader(F("Cache-Control"), F("max-age=290304000, public"));
+  _wm.server->sendHeader(F("Cache-Control"), F("max-age=290304000, public"));
 
   if (path.endsWith(".src")) path = path.substring(0, path.lastIndexOf("."));
   else if (path.endsWith(".html")||path.endsWith(".htm")) dataType = "text/html";
-  else if (path.endsWith(".htm")) dataType = "text/html";
+  else if (path.endsWith(".log")) dataType = "text/html";
   else if (path.endsWith(".css")) dataType = "text/css";
   else if (path.endsWith(".js")) dataType = "application/javascript";
   else if (path.endsWith(".png")) dataType = "image/png";
@@ -59,12 +59,12 @@ bool loadFromSpiffs(String path) {
     path+=".gz";
   };
 
-  Log.print(LogObject::DebugLevels::Verbose,"Page request :");
-  Log.println(LogObject::DebugLevels::Verbose,path.c_str());
+  _Log.print(LogObject::DebugLevels::Verbose,"Page request :");
+  _Log.println(LogObject::DebugLevels::Verbose,path.c_str());
   File dataFile = SPIFFS.open(path.c_str(), "r");
 
-  if (wm.server->hasArg("download")) dataType = "application/octet-stream";
-  if (wm.server->streamFile(dataFile, dataType) != dataFile.size()) {}
+  if (_wm.server->hasArg("download")) dataType = "application/octet-stream";
+  if (_wm.server->streamFile(dataFile, dataType) != dataFile.size()) {}
 
   dataFile.close();
   return true;
@@ -75,12 +75,12 @@ bool handleReset()
   initDataFile();
   initPowerFile();
   
-  WiFiClient  client = wm.server->client();
+  WiFiClient  _client = _wm.server->client();
   sendHeader();
-  client.println(FPSTR(HTTP_STYLE));
-  client.println("<div class='wrap'><div class='msg'>Saved<br/></div></div>");
+  _client.println(FPSTR(HTTP_STYLE));
+  _client.println("<div class='wrap'><div class='msg'>Saved<br/></div></div>");
   delay(1);
-  client.stop();
+  _client.stop();
   
   return true;
 }

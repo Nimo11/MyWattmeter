@@ -71,7 +71,7 @@ void setup() {
         // Button pressed 
         Serial.println("SETUP");
 
-        WiFiManager wm;
+        WiFiManager _wm;
         
         sett.s[19] = '\0';   //add null terminator at the end cause overflow
         WiFiManagerParameter param_str( "str", "param_string",  sett.s, 20);
@@ -81,13 +81,13 @@ void setup() {
         IPAddress ip(sett.ip);
         IPAddressParameter param_ip("ip", "param_ip", ip);
 
-        wm.addParameter( &param_str );
-        wm.addParameter( &param_float );
-        wm.addParameter( &param_int );
-        wm.addParameter( &param_ip );
+        _wm.addParameter( &param_str );
+        _wm.addParameter( &param_float );
+        _wm.addParameter( &param_int );
+        _wm.addParameter( &param_ip );
 
         //SSID & password parameters already included
-        wm.startConfigPortal();
+        _wm.startConfigPortal();
 
         strncpy(sett.s, param_str.getValue(), 20);
         sett.s[19] = '\0'; 

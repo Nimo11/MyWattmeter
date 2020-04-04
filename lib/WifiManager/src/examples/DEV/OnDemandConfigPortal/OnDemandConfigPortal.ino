@@ -55,7 +55,7 @@ void print_oled(String str,uint8_t size){
   (void)size;
 }
 
-WiFiManager wm;
+WiFiManager _wm;
 bool TEST_CP  = false; // always start the configportal
 bool TEST_NET = true; // do a network test, get ntp time
 char ssid[] = "*************";  //  your network SSID (name)
@@ -83,13 +83,13 @@ void saveParamCallback(){
 }
 
 void bindServerCallback(){
-  wm.server->on("/custom",handleRoute);
+  _wm.server->on("/custom",handleRoute);
   // wm.server->on("/info",handleRoute); // can override wm!
 }
 
 void handleRoute(){
   Serial.println("[HTTP] handle route");
-  wm.server->send(200, "text/plain", "hello from user code");
+  _wm.server->send(200, "text/plain", "hello from user code");
 }
 
 void setup() {
@@ -104,14 +104,14 @@ void setup() {
   init_oled();
   #endif
   print_oled(F("Starting..."),2);
-  wm.debugPlatformInfo();
+  _wm.debugPlatformInfo();
 
   //Local intialization. Once its business is done, there is no need to keep it around
   //reset settings - for testing
   // wm.resetSettings();
   // wm.erase();
   
-  wm.setClass("invert");
+  _wm.setClass("invert");
 
   //sets timeout until configuration portal gets turned off
   //useful to make it all retry or go to sleep
@@ -128,18 +128,18 @@ void setup() {
   WiFiManagerParameter custom_ipaddress("input_ip", "input IP", "", 15,"pattern='\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}'"); // custom input attrs (ip mask)
 
   // callbacks
-  wm.setAPCallback(configModeCallback);
-  wm.setWebServerCallback(bindServerCallback);
-  wm.setSaveConfigCallback(saveWifiCallback);
-  wm.setSaveParamsCallback(saveParamCallback);
+  _wm.setAPCallback(configModeCallback);
+  _wm.setWebServerCallback(bindServerCallback);
+  _wm.setSaveConfigCallback(saveWifiCallback);
+  _wm.setSaveParamsCallback(saveParamCallback);
 
   //add all your parameters here
-  wm.addParameter(&custom_html);
-  wm.addParameter(&custom_mqtt_server);
-  wm.addParameter(&custom_mqtt_port);
-  wm.addParameter(&custom_token);
-  wm.addParameter(&custom_tokenb);
-  wm.addParameter(&custom_ipaddress);
+  _wm.addParameter(&custom_html);
+  _wm.addParameter(&custom_mqtt_server);
+  _wm.addParameter(&custom_mqtt_port);
+  _wm.addParameter(&custom_token);
+  _wm.addParameter(&custom_tokenb);
+  _wm.addParameter(&custom_ipaddress);
 
   custom_html.setValue("test",4);
   custom_token.setValue("test",4);
@@ -149,7 +149,7 @@ void setup() {
   // wm.setMenu(menu,9); // custom menu array must provide length
 
   std::vector<const char *> menu = {"wifi","wifinoscan","info","param","close","sep","erase","restart","exit"};
-  wm.setMenu(menu); // custom menu, pass vector
+  _wm.setMenu(menu); // custom menu, pass vector
   
   // set static sta ip
   // wm.setSTAStaticIPConfig(IPAddress(10,0,1,99), IPAddress(10,0,1,1), IPAddress(255,255,255,0));
@@ -168,7 +168,7 @@ void setup() {
 
   // wm.setCountry("US");
   
-  wm.setConfigPortalTimeout(120);
+  _wm.setConfigPortalTimeout(120);
   // wm.startConfigPortal("AutoConnectAP", "password");
 
   //fetches ssid and pass and tries to connect
@@ -177,14 +177,14 @@ void setup() {
   //and goes into a blocking loop awaiting configuration
   
   print_oled(F("Connecting..."),2);  
-  if(!wm.autoConnect("AutoConnectAP")) {
+  if(!_wm.autoConnect("AutoConnectAP")) {
     Serial.println("failed to connect and hit timeout");
     print_oled("Not Connected",2);
   }
   else if(TEST_CP) {
     // start configportal always
-    wm.setConfigPortalTimeout(60);
-    wm.startConfigPortal();
+    _wm.setConfigPortalTimeout(60);
+    _wm.startConfigPortal();
   }
   else {
     //if you get here you have connected to the WiFi
@@ -198,12 +198,12 @@ void loop() {
   // is configuration portal requested?
   if ( digitalRead(TRIGGER_PIN) == LOW ) {
     Serial.println("BUTTON PRESSED");
-    wm.setConfigPortalTimeout(120);
+    _wm.setConfigPortalTimeout(120);
 
     // disable captive portal redirection
     // wm.setCaptivePortalEnable(false);
     
-    if (!wm.startConfigPortal("OnDemandAP")) {
+    if (!_wm.startConfigPortal("OnDemandAP")) {
       Serial.println("failed to connect and hit timeout");
       delay(3000);
     } else {

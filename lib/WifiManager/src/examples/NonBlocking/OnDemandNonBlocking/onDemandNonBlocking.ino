@@ -9,7 +9,7 @@
 // select which pin will trigger the configuration portal when set to LOW
 #define TRIGGER_PIN 0
 
-WiFiManager wm;
+WiFiManager _wm;
 
 unsigned int  timeout   = 120; // seconds to run for
 unsigned int  startTime = millis();
@@ -31,15 +31,15 @@ void loop() {
 void doWiFiManager(){
   // is auto timeout portal running
   if(portalRunning){
-    wm.process();
+    _wm.process();
     if((millis()-startTime) > (timeout*1000)){
       Serial.println("portaltimeout");
       portalRunning = false;
       if(startAP){
-        wm.stopConfigPortal();
+        _wm.stopConfigPortal();
       }  
       else{
-        wm.stopWebPortal();
+        _wm.stopWebPortal();
       } 
    }
   }
@@ -48,12 +48,12 @@ void doWiFiManager(){
   if(digitalRead(TRIGGER_PIN) == LOW && (!portalRunning)) {
     if(startAP){
       Serial.println("Button Pressed, Starting Config Portal");
-      wm.setConfigPortalBlocking(false);
-      wm.startConfigPortal();
+      _wm.setConfigPortalBlocking(false);
+      _wm.startConfigPortal();
     }  
     else{
       Serial.println("Button Pressed, Starting Web Portal");
-      wm.startWebPortal();
+      _wm.startWebPortal();
     }  
     portalRunning = true;
     startTime = millis();

@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-extern String getTimeString(int delta);
+
 
 extern String urlBuilder(char* idx,char* svalue);
 
